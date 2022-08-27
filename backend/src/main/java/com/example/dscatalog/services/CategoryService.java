@@ -3,12 +3,14 @@ package com.example.dscatalog.services;
 import com.example.dscatalog.dto.CategoryDTO;
 import com.example.dscatalog.entities.Category;
 import com.example.dscatalog.repositories.CategoryRepository;
+import com.example.dscatalog.services.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 //Registra a classe como um componente que participa do sistema de injeção de dependencia
@@ -30,4 +32,10 @@ public class CategoryService {
 //        list.forEach(category -> listDto.add(new CategoryDTO(category)));
         return listDto;
     };
+
+    public CategoryDTO findCategoryById(Long id){
+        Optional<Category> obj = repository.findById(id);
+        Category entity = obj.orElseThrow(()-> new EntityNotFoundException("Category not found !"));
+        return new CategoryDTO(entity);
+    }
 }
