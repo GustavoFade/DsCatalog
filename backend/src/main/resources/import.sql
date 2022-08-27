@@ -1,0 +1,10 @@
+INSERT INTO tb_category(name) values ('Livros');
+INSERT INTO tb_category(name) values ('Eletronicos');
+INSERT INTO tb_category(name) values ('Computadores');
+INSERT INTO tb_category(name) values ('Mercado');
+INSERT INTO tb_category(name) values ('Móveis');
+INSERT INTO tb_category(name) values ('Beleza e perfumaria');
+INSERT INTO tb_category(name) values ('Moda');
+INSERT INTO tb_category(name) values ('Relógios');
+INSERT INTO tb_category(name) values ('Música');
+INSERT INTO tb_category(name) values ('Artesanato');
