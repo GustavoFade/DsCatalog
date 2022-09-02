@@ -1,6 +1,6 @@
 package com.example.dscatalog.resources.exception;
 
-import com.example.dscatalog.services.exceptions.EntityNotFoundException;
+import com.example.dscatalog.services.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,8 +13,8 @@ import java.time.Instant;
 @ControllerAdvice // essa anotation permite que a classe intercepte alguma excessão na camada de resouce
 public class ResouceExceptionHandler {
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<StandardException> entityNotFound(EntityNotFoundException e, HttpServletRequest request){
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<StandardException> entityNotFound(ResourceNotFoundException e, HttpServletRequest request){
         StandardException err = new StandardException();
         err.setTimestamp(Instant.now());
         err.setStatus(HttpStatus.NOT_FOUND.value());
