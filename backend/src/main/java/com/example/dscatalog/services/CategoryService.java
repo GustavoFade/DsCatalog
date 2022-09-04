@@ -57,6 +57,7 @@ public class CategoryService {
         try {
             Category entity = repository.getOne(id);
             entity.setName(dto.getName());
+            entity = repository.save(entity);
             return new CategoryDTO(entity);
         } catch (EntityNotFoundException e){
             throw new ResourceNotFoundException("Category not found, update failed ! id: " + id);

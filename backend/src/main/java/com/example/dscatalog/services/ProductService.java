@@ -51,7 +51,6 @@ public class ProductService {
     public ProductDTO insertProduct(ProductDTO dto) {
         Product entity = new Product();
         copyDtoToEntity(dto,entity);
-//        entity.setName(dto.getName());
         entity = productRepository.save(entity);
         return new ProductDTO(entity, entity.getCategories());
     }
@@ -61,7 +60,7 @@ public class ProductService {
         try {
             Product entity = productRepository.getOne(id);
             copyDtoToEntity(dto,entity);
-//            entity.setName(dto.getName());
+            entity = productRepository.save(entity);
             return new ProductDTO(entity,entity.getCategories());
         } catch (EntityNotFoundException e){
             throw new ResourceNotFoundException("Product not found, update failed ! id: " + id);
