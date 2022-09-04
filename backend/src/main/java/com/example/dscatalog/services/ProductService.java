@@ -1,7 +1,10 @@
 package com.example.dscatalog.services;
 
+import com.example.dscatalog.dto.CategoryDTO;
 import com.example.dscatalog.dto.ProductDTO;
+import com.example.dscatalog.entities.Category;
 import com.example.dscatalog.entities.Product;
+import com.example.dscatalog.repositories.CategoryRepository;
 import com.example.dscatalog.repositories.ProductRepository;
 import com.example.dscatalog.services.exceptions.DataBaseException;
 import com.example.dscatalog.services.exceptions.ResourceNotFoundException;
@@ -23,12 +26,14 @@ import java.util.Optional;
 @Service
 public class ProductService {
     @Autowired // usado para injetar dependencia
-    private ProductRepository repository;
+    private ProductRepository productRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     //se nesse faz varias operações e todas essas estão envolvidas com o banco e quero ter a integridade da transação, coloca a @transactional
     @Transactional(readOnly = true)//quando é apenas leitura usa isso para ser mais rapido, não trava o bd
     public Page<ProductDTO> findAllPaged(PageRequest pageRequest){
-        Page<Product> list = repository.findAll(pageRequest);
+        Page<Product> list = productRepository.findAll(pageRequest);
 
         Page<ProductDTO> listDto = list.map( x -> new ProductDTO(x, x.getCategories()));
 
@@ -38,24 +43,26 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public ProductDTO findProductById(Long id){
-        Optional<Product> obj = repository.findById(id);
+        Optional<Product> obj = productRepository.findById(id);
         Product entity = obj.orElseThrow(()-> new ResourceNotFoundException("Product not found !"));
         return new ProductDTO(entity, entity.getCategories());
     }
     @Transactional
     public ProductDTO insertProduct(ProductDTO dto) {
         Product entity = new Product();
+        copyDtoToEntity(dto,entity);
 //        entity.setName(dto.getName());
-        entity = repository.save(entity);
-        return new ProductDTO(entity);
+        entity = productRepository.save(entity);
+        return new ProductDTO(entity, entity.getCategories());
     }
 
     @Transactional
     public ProductDTO updateProduct(long id, ProductDTO dto) {
         try {
-            Product entity = repository.getOne(id);
+            Product entity = productRepository.getOne(id);
+            copyDtoToEntity(dto,entity);
 //            entity.setName(dto.getName());
-            return new ProductDTO(entity);
+            return new ProductDTO(entity,entity.getCategories());
         } catch (EntityNotFoundException e){
             throw new ResourceNotFoundException("Product not found, update failed ! id: " + id);
         }
@@ -64,11 +71,25 @@ public class ProductService {
 
     public void delete(long id) {
         try {
-            repository.deleteById(id);
+            productRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e){
             throw new ResourceNotFoundException("Product not found, delete failed ! id: " + id);
         } catch (DataIntegrityViolationException e){
             throw new DataBaseException("Integrity violation !");
+        }
+    }
+
+    private void copyDtoToEntity(ProductDTO dto, Product entity) {
+        entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+        entity.setDate(dto.getDate());
+        entity.setImgUrl(dto.getImg_url());
+        entity.setPrice(dto.getPrice());
+
+        entity.getCategories().clear();
+        for (CategoryDTO categoryDTO: dto.getCategories()) {
+            Category category = categoryRepository.getOne(categoryDTO.getId());
+            entity.getCategories().add(category);
         }
     }
 }
