@@ -1,6 +1,7 @@
 package com.example.dscatalog.entities;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
@@ -9,13 +10,15 @@ import java.util.Set;
 @Entity
 @Table(name = "tb_product")
 public class Product {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private Double price;
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT") // usado para ser um tipo text no bd e não um varchar, quando há campos grandes
     private String description;
     private String img_url;
 
@@ -24,8 +27,8 @@ public class Product {
 
     @ManyToMany
     @JoinTable(name = "tb_product_category",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
+            joinColumns = @JoinColumn(name = "product_id"),//nome da coluna da tabela atual
+            inverseJoinColumns = @JoinColumn(name = "category_id")) // nome da coluna da outra tabela da associação, vai pegar o que está abaixo
     Set<Category> categories = new HashSet<>();
 
     public Product(){
