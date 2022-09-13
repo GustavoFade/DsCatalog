@@ -16,17 +16,18 @@ public class User implements Serializable {
     private Long id;
     private String firstName;
     private String lastName;
+    @Column(unique = true)
     private String email;
     private String password;
 
     public User() {
     }
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tb_user_role",
             joinColumns = @JoinColumn(name = "user_id"),//nome da coluna da tabela atual
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private final Set<Role> roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 
     public User(Long id, String firstName, String lastName, String email, String password) {
         this.id = id;
