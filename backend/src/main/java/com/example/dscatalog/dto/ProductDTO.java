@@ -4,6 +4,10 @@ import com.example.dscatalog.entities.Category;
 import com.example.dscatalog.entities.Product;
 
 import javax.persistence.Column;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.io.Serial;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -15,10 +19,14 @@ public class ProductDTO {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    @Size(min = 5, max = 60, message = "Nome deve ter entre 5 a 60 letras")
+    @NotBlank(message = "Campo obrigatório")
     private String name;
+    @Positive(message = "Preço deve ser positivo")
     private Double price;
     private String description;
     private String img_url;
+    @PastOrPresent(message = "Data do produto não pode ser futura")
     private Instant date;
 
     private List<CategoryDTO> categories = new ArrayList<>();
